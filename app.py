@@ -11,7 +11,7 @@ st.set_page_config(
 
 
 @st.cache
-def get_data_fron_excel():
+def get_data_from_excel():
     dtf = pd.read_excel(
         io='supermarkt_sales.xlsx',
         engine='openpyxl',
@@ -20,12 +20,14 @@ def get_data_fron_excel():
         usecols='B:R',
         nrows=1000
     )
-    # ADD HOUR COLUMN TO DATAFRAME
-    dtf["hour"] = pd.to_datetime(dtf["Time"], format="%H:%M:%S").dt.hour
+    # Convert the 'Time' column to datetime format
+    dtf["Time"] = pd.to_datetime(dtf["Time"])
+    # Extract the hour from the 'Time' column
+    dtf["hour"] = dtf["Time"].dt.hour
     return dtf
 
 
-df = get_data_fron_excel()
+df = get_data_from_excel()
 
 # st.dataframe(df)
 
@@ -79,11 +81,11 @@ st.markdown("---")
 
 # SALES BY PRODUCT LINE [BAR CHART]
 sales_by_product_line = (
-    df_selection.groupby(by=["Product line"]).sum()[["Total"]].sort_values(by="Total")
+    df_selection.groupby(by=["Product line"])["Total"].sum().sort_values()
 )
 fig_product_sales = px.bar(sales_by_product_line,
-                           x="Total",
-                           y=sales_by_product_line.index,
+                           x=sales_by_product_line.index,
+                           y="Total",
                            title="<b>Sales by Product Line</b>",
                            color_discrete_sequence=["#0083B8"] * len(sales_by_product_line),
                            template="plotly_white")
@@ -93,11 +95,11 @@ fig_product_sales.update_layout(
 
 # SALES BY HOUR
 sales_by_hour = (
-    df_selection.groupby(by=["hour"]).sum()[["Total"]].sort_values(by="Total")
+    df_selection.groupby(by=["hour"])["Total"].sum().sort_values()
 )
 fig_hourly_sales = px.bar(sales_by_hour,
-                          y="Total",
                           x=sales_by_hour.index,
+                          y="Total",
                           title="<b>Sales by Hour</b>",
                           color_discrete_sequence=["#0083B8"] * len(sales_by_hour),
                           template="plotly_white")
