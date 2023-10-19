@@ -1,4 +1,4 @@
-# StreamLit Visualization
+# Supermarket sales analysis
 A visualization showing KPIs and other metrics
 
 ## Visualization
