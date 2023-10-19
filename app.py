@@ -20,7 +20,9 @@ def get_data_from_excel():
         usecols='B:R',
         nrows=1000
     )
-    # Convert the 'Time' column to datetime format
+    # Convert the 'Time' column to string type
+    dtf["Time"] = dtf["Time"].astype(str)
+    # Then convert the 'Time' column to datetime format
     dtf["Time"] = pd.to_datetime(dtf["Time"])
     # Extract the hour from the 'Time' column
     dtf["hour"] = dtf["Time"].dt.hour
@@ -28,8 +30,6 @@ def get_data_from_excel():
 
 
 df = get_data_from_excel()
-
-# st.dataframe(df)
 
 # ------  SIDE BAR  ------
 st.sidebar.header("Please filter here:")
